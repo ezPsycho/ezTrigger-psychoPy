@@ -26,13 +26,13 @@ class ezSocketClient(asyncore.dispatcher):
   def handle_read(self):
     self.RecvData = self.recv(8192)
     if len(self.RecvData) > 0:
-      self.ppyClient.handle_server_response(self.RecvData, self)
+      self.ppyClient.handle_server_response(self.RecvData.decode('utf-8'), self)
 
   def handle_write(self):
-    self.send(self.SendData)
-    print("[SEND] " + self.SendData)
+    self.send(self.SendData.encode())
+    print("[SEND] " + self.SendData.strip())
 
-  def send(self, data):
+  def send_message(self, data):
     self.SendData = "%s\r\n" % (data)
     self.handle_write()
 
@@ -42,9 +42,9 @@ class ezSocketClient(asyncore.dispatcher):
 
 class ezTriggerPPyClient(threading.Thread):
   def __init__(self, serverIp, serverPort, clientType='PPY', clientId=''):
-    self.client = ezSocketClient(serverIp, serverPort, self)
+    self.client = ezSocketClient(serverIp, int(serverPort), self)
     self.serverIp = serverIp
-    self.serverPort = serverPort
+    self.serverPort = int(serverPort)
     self.clientType = clientType
     self.clientId = clientId
 
@@ -75,11 +75,11 @@ class ezTriggerPPyClient(threading.Thread):
     elif command == 'ENDROUTINE':
       continueRoutine = False
     elif command == 'WHO':
-      connection.send = "TP %s" % (self.clientType)
+      connection.send_message("TP %s" % self.clientType)
     elif command == 'REGISTERED':
       if self.clientId and self.clientId != '':
-        connection.send = "ID %s" % (self.clientId)
+        connection.send_message("ID %s" % self.clientId)
 
-    print("[RECV] " + data)
+    print("[RECV] " + data.strip())
 
 # ezTrigger system initialization code end.

@@ -18,8 +18,8 @@ connectionScript = open(path.join(thisFolder, 'connectionScript.py'), 'r').read(
 # only use _localized values for label values, nothing functional:
 _localized = {'serverIp': _translate('Server address'),
               'serverPort': _translate("Server port"),
-              'ClientType': _translate("Client type"),
-              'ClientId': _translate("Client ID")}
+              'clientType': _translate("Client type"),
+              'clientId': _translate("Client ID")}
 
 
 class ezTriggerConnectionComponent(BaseComponent):
@@ -46,7 +46,7 @@ class ezTriggerConnectionComponent(BaseComponent):
         msg = _translate(
             "The port of the server - a number between 1 and 65535.")
         self.params['serverPort'] = Param(
-            serverPort, valType='num', allowedTypes=[],
+            serverPort, valType='int', allowedTypes=[],
             hint=msg,
             label=_localized["serverPort"])
 
@@ -55,14 +55,14 @@ class ezTriggerConnectionComponent(BaseComponent):
         self.params['clientType'] = Param(
             clientType, valType='str', allowedTypes=[],
             hint=msg,
-            label=_localized["ClientType"])
+            label=_localized["clientType"])
 
         msg = _translate(
             "The ID of this client - to distinguish this device from other devices, you can set an IP for each one.")
         self.params['clientId'] = Param(
             clientId, valType='str', allowedTypes=[],
             hint=msg,
-            label=_localized["ClientId"])
+            label=_localized["clientId"])
 
         for p in ('startType', 'startVal', 'startEstim', 'stopVal',
                   'stopType', 'durationEstim'):
@@ -73,7 +73,7 @@ class ezTriggerConnectionComponent(BaseComponent):
         buff.writeIndentedLines(connectionScript + '\n')
 
         inits = getInitVals(self.params, 'PsychoPy')
-        code = ("%(name)s = PDESClient(%(serverIp)s , %(serverPort)s, %(ClientType)s, %(ClientId)s)"
+        code = ("%(name)s = ezTriggerPPyClient(%(serverIp)s , %(serverPort)s, %(clientType)s, %(clientId)s)\n"
                 "%(name)s.start()")
 
         buff.writeIndentedLines(code % inits + '\n')

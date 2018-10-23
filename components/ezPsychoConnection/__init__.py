@@ -1,5 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import, print_function
+from builtins import str
 from os import path
-from .._base import BaseComponent, Param, getInitVals, _translate
+from psychopy.experiment.components import BaseComponent, Param, getInitVals, _translate
 
 __author__ = 'Losses Don'
 
